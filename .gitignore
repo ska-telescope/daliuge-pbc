@@ -1,6 +1,7 @@
 *.pyc
 __pycache__
 *.egg-info
+.coverage
 
 .project
 .pydevproject
