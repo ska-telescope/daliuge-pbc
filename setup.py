@@ -27,10 +27,12 @@ install_requires = ['skasip-config-db', 'daliuge>=0.6.1', 'celery']
 
 with open('README.rst', 'rt') as f:
     long_description = f.read()
+with open('dlg_pbc/VERSION', 'rt') as f:
+    version = f.read()
 
 setup(
     name='daliuge-pbc',
-    version="0.1",
+    version=version,
     description=u'DALiuGE-based Processing Block Controller for the SIP',
     long_description=long_description,
     long_description_content_type='text/x-rst',
@@ -40,5 +42,5 @@ setup(
     license="LGPLv2+",
     install_requires=install_requires,
     packages=find_packages(),
-    package_data={'': ['logical_graphs/*.json']},
+    package_data={'dlg_pbc': ['logical_graphs/*.json', 'VERSION']},
 )

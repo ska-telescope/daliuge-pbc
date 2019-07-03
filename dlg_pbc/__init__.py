@@ -20,4 +20,16 @@
 #    MA 02111-1307  USA
 #
 
+def _read_version():
+    import sys
+    import pkg_resources
+    with pkg_resources.resource_stream(__name__, 'VERSION') as f:
+        version = f.read()
+        if sys.version_info[0] >= 3:
+            version = version.decode('ascii')
+        return version
+
+__version__ = _read_version()
+del _read_version
+
 from .common import run_processing_block
