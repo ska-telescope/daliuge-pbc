@@ -23,7 +23,13 @@
 from setuptools import setup, find_packages
 
 
-install_requires = ['skasip-config-db', 'daliuge>=0.6.1', 'celery']
+install_requires = [
+    'celery',
+    'daliuge>=0.6.1',
+    'skasip-config-db',
+    'skasip-docker-swarm',
+    'skasip-logging',
+]
 
 with open('README.rst', 'rt') as f:
     long_description = f.read()
