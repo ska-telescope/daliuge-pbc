@@ -52,7 +52,7 @@ services:
     - config_database
 
   dlg_pcb:
-    image: icrar/daliuge_pbc:latest
+    image: nexus.engageska-portugal.pt/ska-docker/daliuge_pbc:latest
     environment:
     - CELERY_BROKER_URL=redis://config_database/1
     - CELERY_RESULT_BACKEND=redis://config_database/2
