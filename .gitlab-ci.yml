@@ -29,7 +29,7 @@ services:
   - docker:dind
 
 before_script:
-  - docker login -u $DOCKER_REGISTRY_USER_LOGIN -p $CI_REGISTRY_PASS_LOGIN $CI_REGISTRY
+  - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY_HOST
   - docker info
 
 stages:
@@ -40,5 +40,5 @@ build_docker:
   tags:
     - docker-executor
   script:
-    - docker build -t $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_USER/daliuge_pbc .
-    - docker push $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_USER/daliuge_pbc:latest
+    - docker build -t $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_FOLDER/daliuge_pbc .
+    - docker push $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_FOLDER/daliuge_pbc:latest
