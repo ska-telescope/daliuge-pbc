@@ -24,6 +24,7 @@ variables:
   # For non-Kubernetes executors, we use tcp://docker:2375/
   DOCKER_HOST: tcp://docker:2375/
   DOCKER_DRIVER: overlay2
+  IMAGE_NAME: daliuge_pbc
 
 services:
   - docker:dind
@@ -40,5 +41,9 @@ build_docker:
   tags:
     - docker-executor
   script:
-    - docker build -t $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_FOLDER/daliuge_pbc .
-    - docker push $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_FOLDER/daliuge_pbc:latest
+    - version=`cat VERSION`
+    - full_image_name=$DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_FOLDER/$IMAGE_NAME
+    - docker build -t ${full_image_name} .
+    - docker tag ${full_image_name}:$version ${full_image_name}:latest
+    - docker push ${full_image_name}:$version
+    - docker push ${full_image_name}:latest
