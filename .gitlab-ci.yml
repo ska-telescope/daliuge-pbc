@@ -44,6 +44,6 @@ build_docker:
     - version=`cat VERSION`
     - full_image_name=$DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_FOLDER/$IMAGE_NAME
     - docker build -t ${full_image_name} .
-    - docker tag ${full_image_name}:$version ${full_image_name}:latest
+    - docker tag ${full_image_name}:latest ${full_image_name}:$version
     - docker push ${full_image_name}:$version
     - docker push ${full_image_name}:latest
