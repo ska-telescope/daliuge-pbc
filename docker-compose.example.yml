@@ -29,16 +29,6 @@ services:
     ports:
       - 6379:6379
 
-  nm:
-    image: nexus.engageska-portugal.pt/ska-docker/yanda-daliuge
-    command: ["dlg", "nm", "-v", "-H", "0.0.0.0"]
-
-  dim:
-    image: nexus.engageska-portugal.pt/ska-docker/yanda-daliuge
-    command: ["dlg", "dim", "-N", "nm", "-v", "-H", "0.0.0.0"]
-    depends_on:
-    - nm
-
   processing_controller:
     image: skasip/processing_controller:latest
     environment:
@@ -51,7 +41,7 @@ services:
     depends_on:
     - config_database
 
-  dlg_pcb:
+  dlg_pbc:
     image: nexus.engageska-portugal.pt/ska-docker/daliuge_pbc:latest
     environment:
     - CELERY_BROKER_URL=redis://config_database/1
@@ -62,3 +52,17 @@ services:
     depends_on:
     - config_database
     - dim
+
+  dim:
+    image: nexus.engageska-portugal.pt/ska-docker/yanda-daliuge
+    command: ["dlg", "dim", "-N", "nm", "-v", "-H", "0.0.0.0"]
+    depends_on:
+    - nm
+    ports:
+      - 8001:8001
+
+  nm:
+    image: nexus.engageska-portugal.pt/ska-docker/yanda-daliuge
+    command: ["dlg", "nm", "-v", "-H", "0.0.0.0"]
+    ports:
+      - 8000:8000
