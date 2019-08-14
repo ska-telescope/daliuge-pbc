@@ -24,9 +24,6 @@ variables:
   DOCKER_DRIVER: overlay2
   IMAGE_NAME: daliuge_pbc
 
-services:
-  - docker:dind
-
 before_script:
   - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY_HOST
   - docker info
