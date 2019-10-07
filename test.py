@@ -22,7 +22,7 @@
 import unittest
 
 from dlg import testutils
-import dlg_pbc
+import dlg_workflow
 
 
 class ProcessingBlock(object):
@@ -44,5 +44,5 @@ class SimpleTest(unittest.TestCase, testutils.ManagerStarter):
             statuses.append(status)
 
         with self.start_nm_in_thread(), self.start_dim_in_thread():
-            dlg_pbc.run_processing_block(processing_block, callback, zero_cost_run=True)
+            dlg_workflow.run_processing_block(processing_block, callback, zero_cost_run=True)
         self.assertListEqual(['preparing', 'running', 'finished'], statuses)
