@@ -41,7 +41,7 @@ def _create_pg(logical_graph, processing_block, node_managers,
                data_island_manager, zero_cost_run):
 
     logical_graph = pg_generator.fill(
-        logical_graph, processing_block.workflow_parameters)
+        logical_graph, processing_block.parameters)
 
     unroll_kwargs = {}
     if zero_cost_run:
@@ -66,10 +66,10 @@ def run_processing_block(processing_block, status_callback, host='127.0.0.1',
                          port=constants.ISLAND_DEFAULT_REST_PORT, zero_cost_run=False):
     """Runs a ProcessingBlock to completion under daliuge"""
 
-    session_id = 'pb_%s' % processing_block.id
+    session_id = 'pb_%s' % processing_block.pb_id
     logical_graph = _get_lg(
-        processing_block.workflow_id,
-        processing_block.workflow_version)
+        processing_block.workflow['id'],
+        processing_block.workflow['version'])
 
     status_callback('preparing')
     nodes = client.CompositeManagerClient(host, port, timeout=None).nodes()

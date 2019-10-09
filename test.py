@@ -33,10 +33,12 @@ class SimpleTest(unittest.TestCase, testutils.ManagerStarter):
     def test_run_processing_block(self):
 
         processing_block = ProcessingBlock()
-        processing_block.id = 'abc'
-        processing_block.workflow_id = 'workflow_id'
-        processing_block.workflow_version = '0.1'
-        processing_block.workflow_parameters = {}
+        processing_block.pb_id = 'abc'
+        processing_block.workflow = {
+            'id': 'workflow_id',
+            'version': '0.1',
+        }
+        processing_block.parameters = {}
 
         statuses = []
 
