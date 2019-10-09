@@ -23,13 +23,12 @@
 FROM nexus.engageska-portugal.pt/ska-docker/yanda-daliuge
 LABEL maintainer="Rodrigo Tobar <rtobar@icrar.com>"
 
-COPY . dlg_pbc
-RUN pip install ./dlg_pbc && pip install -U redis celery && \
+COPY . dlg_workflow
+RUN pip install ./dlg_workflow && \
     rm -r /root/.cache
 
 RUN addgroup --system sip && adduser --system sip && adduser sip sip
 USER sip
 WORKDIR /home/sip
 
-ENTRYPOINT ["celery"]
-CMD ["-C", "-A", "dlg_pbc.tasks", "worker", "-l", "INFO"]
+CMD ["python", "-m", "dlg_workflow.main"]
