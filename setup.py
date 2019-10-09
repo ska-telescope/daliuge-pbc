@@ -24,16 +24,13 @@ from setuptools import setup, find_packages
 
 
 install_requires = [
-    'celery',
     'daliuge>=0.6.1',
-    'skasip-config-db',
-    'skasip-docker-swarm',
-    'skasip-logging',
+    'ska-sdp-config',
 ]
 
 with open('README.rst', 'rt') as f:
     long_description = f.read()
-with open('dlg_pbc/VERSION', 'rt') as f:
+with open('VERSION', 'rt') as f:
     version = f.read()
 
 setup(
