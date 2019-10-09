@@ -1,43 +1,51 @@
 daliuge-pbc
 ===========
 
-This package implements a Processing Block Controller
+This package implements a workflow for the SDP prototype
 based on the DALiuGE execution framework.
-
 
 Quick start
 -----------
 
-To try out this package in an isolated, automated manner try the following::
+These might change depending on your system, etc.
+In Ubuntu 18.10 I had to make sure I used a version of k8s/minikube < 1.16,
+and that my local /etc/resolv.conf was a symlink to /run/systemd/resolve/resolv.conf.
 
- $> docker-compose -f docker-compose.example.yml up
+First, start all the underlying infrastructure::
 
-.. note::
- If you want you can use Docker Swarm instead
- to start the services on the background,
- but you will get no output by default into your screen::
+ minikube start --vm-driver=virtualbox --memory 4096
+ helm init
+ helm install stable/etcd-operator -n etcd
+ helm install [...]/sdp-prototype/deploy/charts/sdp-prototype -n sdp-prototype
 
-  $> docker stack deploy -c docker-compose.example.yml dlg_pbc
+ # Currently started manually, but eventually started automatically from sdp-prototype-helm pod
+ helm install [...]/daliuge-pbc/deploy/daliuge -n daliuge
 
-This should start a DALiuGE Node Manager (nm),
-a Data Island Manager (dim),
-a redis server,
-a Processing Controller instance,
-and an instance of the DALiuGE-based Processing Block Controller (this package).
+ # Check where the etcd service is exposed to the host
+ #  These values feed SDP_CONFIG_HOST / SDP_CONFIG_PORT below
+ minikube service --url sdp-prototype-etcd-nodeport
 
-With these services running on the background
-you can now add a new Scheduling Block instance
-to this "live" system, like this::
+ # Check where the dlg-dim is exposed to the host
+ #  These values feed DLG_DIM_HOST / DLG_DIM_PORT below
+ minikube service --url dlg-dim
 
- $> # If you don't have a copy yet:
- $> git clone https://github.com/SKA-ScienceDataProcessor/integration-prototype
- $> cd integration-prototype/sip/execution_control/configuration_db
- $> # If you don't have it installed yet:
- $> pip install -r requirements.txt
- $> # Finally:
- $> ./sip_config_db/scripts/skasip_config_db_add_sbi
+ # Now leave the NM log running...
+ kubectl logs daliuge-deployment-[...] dlg-nm
 
-This will internally create three Processing Blocks,
-which in turn will end up triggering
-the DALiuGE-based PBC to schedule a physical graph for execution
-in the Node Manager via the Data Island Manager.
+In a separate browser open ``$DLG_DIM_HOST:$DLG_DIM_PORT``
+
+On a separate terminal start the Processing Block watcher
+that will kick the DALiuGE cluster::
+
+ export SDP_CONFIG_HOST=....
+ export SDP_CONFIG_PORT=...
+ export DLG_DIM_HOST=...
+ export DLG_DIM_PORT=...
+ cd [...]/daliuge-pbc
+ python -m dlg_workflow.main
+
+In yet another terminal "insert" a Processing Block::
+
+ export SDP_CONFIG_HOST=....
+ export SDP_CONFIG_PORT=...
+ sdpcfg process dlg-realtime:testdlg:0.0.1
