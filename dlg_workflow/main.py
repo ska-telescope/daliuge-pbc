@@ -35,7 +35,7 @@ def get_pb(config):
     workflow = {
         'id': 'testdlg',
         'version': '0.0.1',
-        'type': 'realtime'
+        'type': 'dlg-realtime'
     }
     logger.info("Waiting for processing block...")
     for txn in config.txn():
@@ -49,7 +49,7 @@ def get_pb(config):
 
 
 def create_deployment(config, pb):
-    logger.info("Deploying Dask...")
+    logger.info("Deploying DALiuGE...")
     deploy_id = pb.pb_id + "-dlg"
     deployment = ska_sdp_config.Deployment(
         deploy_id, "helm", {
