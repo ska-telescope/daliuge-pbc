@@ -20,10 +20,14 @@
 #    MA 02111-1307  USA
 #
 import logging
+import os
 
 import ska_sdp_config
 from dlg_workflow import common
 
+
+DLG_DIM_HOST = os.environ.get('DLG_DIM_HOST', None)
+DLG_DIM_PORT = int(os.environ.get('DLG_DIM_PORT', 8001))
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +80,10 @@ def main():
     pb = get_pb(config)
     deployment = create_deployment(config, pb)
     try:
-        common.run_processing_block(pb, lambda _: None)
+        dim_host = DLG_DIM_HOST or (deployment.deploy_id + '-scheduler.sdp-helm')
+        logger.info("Executing PB in DALiuGE...")
+        common.run_processing_block(pb, lambda _: None, host=dim_host,
+                                    port=DLG_DIM_PORT)
         idle_for_some_obscure_reason(config, pb)
     finally:
         cleanup(config, deployment)
