@@ -21,7 +21,7 @@
 image: docker:stable
 
 variables:
-  IMAGE_NAME: daliuge_pbc
+  IMAGE_NAME: daliuge_workflow
 
 before_script:
   - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY_HOST
