@@ -40,4 +40,6 @@ start executing in there::
  # Open $DIM_URL in a browser and leave the dlg-nm log running
  DIM_URL=`minikube service --url dlg-dim -n sdp`
  DLG_POD=`kubectl get pods -o name -l app.kubernetes.io/name=daliuge -n sdp`
+ DLG_WORKFLOW_POD=`kubectl get pods -o name -l app.kubernetes.io/name=daliuge-workflow`
+ kubectl logs -f $DLG_WORKFLOW_POD
  kubectl logs -f -n sdp $DLG_POD dlg-nm
