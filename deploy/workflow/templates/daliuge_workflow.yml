@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "daliuge.fullname" . }}-workflow
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "daliuge.labels" . | indent 4 }}
+spec:
+  completions: 1
+  replicas: {{ .Values.dlg_workflow.replicas }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "daliuge.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+      - image: {{ .Values.dlg_workflow.container }}:{{ .Values.dlg_workflow.version }}
+        imagePullPolicy: {{ .Values.dlg_workflow.imagePullPolicy }}
+        name: dlg-workflow
+        env:
+        - name: SDP_CONFIG_HOST
+          value: {{ include "sdp-prototype.etcd-host" . }}
+        - name: DLG_DIM_HOST
+          value: {{ include "dlg-dim-host" . }}
+        {{- with .Values.dlg_workflow.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+      restartPolicy: Never
+  backoffLimit: 4

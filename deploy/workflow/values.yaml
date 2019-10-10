@@ -1,0 +1,17 @@
+# Default values for daliuge
+# Declare variables to be passed into your templates.
+
+dlg_workflow:
+  container: nexus.engageska-portugal.pt/ska-docker/daliuge_workflow
+  version: latest
+  replicas: 1
+  imagePullPolicy: IfNotPresent
+  resources: {}
+
+sdp_prototype:
+  helm:
+    namespace: sdp
+
+nameOverride: ""
+fullnameOverride: ""
+
