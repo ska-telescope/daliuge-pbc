@@ -16,36 +16,28 @@ First, start all the underlying infrastructure::
  minikube start --vm-driver=virtualbox --memory 4096
  helm init
  helm install stable/etcd-operator -n etcd
- helm install [...]/sdp-prototype/deploy/charts/sdp-prototype -n sdp-prototype
 
- # Currently started manually, but eventually started automatically from sdp-prototype-helm pod
- helm install [...]/daliuge-pbc/deploy/daliuge -n daliuge
+Start now the sdp-prototype chart pointing to the daligue-pbc repository,
+and the daliuge-workflow chart to start watching for incoming Processing Blocks::
 
- # Check where the etcd service is exposed to the host
- #  These values feed SDP_CONFIG_HOST / SDP_CONFIG_PORT below
- minikube service --url sdp-prototype-etcd-nodeport
+ helm install [...]/sdp-prototype/deploy/charts/sdp-prototype -n sdp-prototype --set helm_deploy.chart_repo.url=https://github.com/ska-telescope/daliuge-pbc.git,helm_deploy.chart_repo.path=deploy
+ helm install [...]/daliuge-pbc/deploy/workflow -n dlg-workflow
+ kubectl get pods --watch
+ [...]
 
- # Check where the dlg-dim is exposed to the host
- #  These values feed DLG_DIM_HOST / DLG_DIM_PORT below
- minikube service --url dlg-dim
+Now "create" a Processing Block,
+which will kick the DALiuGE cluster::
 
- # Now leave the NM log running...
- kubectl logs daliuge-deployment-[...] dlg-nm
-
-In a separate browser open ``$DLG_DIM_HOST:$DLG_DIM_PORT``
-
-On a separate terminal start the Processing Block watcher
-that will kick the DALiuGE cluster::
-
- export SDP_CONFIG_HOST=....
- export SDP_CONFIG_PORT=...
- export DLG_DIM_HOST=...
- export DLG_DIM_PORT=...
- cd [...]/daliuge-pbc
- python -m dlg_workflow.main
-
-In yet another terminal "insert" a Processing Block::
-
- export SDP_CONFIG_HOST=....
- export SDP_CONFIG_PORT=...
+ ETCD_URL=`minikube service --url sdp-prototype-etcd-nodeport`
+ export SDP_CONFIG_HOST=`echo $ETCD_URL | sed 's,http://\(.*\):.*,\1,'`
+ export SDP_CONFIG_PORT=`echo $ETCD_URL | sed 's,http://.*:\(.*\),\1,'`
  sdpcfg process dlg-realtime:testdlg:0.0.1
+
+Once this happens a new ``daliuge-deployment`` helm release
+should be created and a Processing Block will eventually
+start executing in there::
+
+ # Open $DIM_URL in a browser and leave the dlg-nm log running
+ DIM_URL=`minikube service --url dlg-dim -n sdp`
+ DLG_POD=`kubectl get pods -o name -l app.kubernetes.io/name=daliuge -n sdp`
+ kubectl logs -f -n sdp $DLG_POD dlg-nm
