@@ -5,3 +5,5 @@ __pycache__
 
 .project
 .pydevproject
+
+/dlg_workflow/VERSION

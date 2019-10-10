@@ -19,6 +19,7 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 #    MA 02111-1307  USA
 #
+import shutil
 
 from setuptools import setup, find_packages
 
@@ -32,6 +33,7 @@ with open('README.rst', 'rt') as f:
     long_description = f.read()
 with open('VERSION', 'rt') as f:
     version = f.read()
+shutil.copy('VERSION', 'dlg_workflow')
 
 setup(
     name='daliuge-pbc',
@@ -45,5 +47,5 @@ setup(
     license="LGPLv2+",
     install_requires=install_requires,
     packages=find_packages(),
-    package_data={'dlg_pbc': ['logical_graphs/*.json', 'VERSION']},
+    package_data={'dlg_workflow': ['logical_graphs/*.json', 'VERSION']},
 )
